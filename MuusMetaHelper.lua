@@ -143,12 +143,14 @@ paragraph:SetJustifyV("TOP")
 paragraph:SetText("|cff00ff00Adventurer of the Isle of Dorn|r: Consider downloading the addon 'rarescanner' - Kill Heaps of Rares. You will probably get this during the Rep Grind and/or Loremaster of Khaz'algar acheivement. WM On however seems to be an efficient way to farm these.\n\n|cff00ff00Flat Earthen|r: Stand under the stamp press in Dornogol near the Teleporter to Undermine.\n\n|cff00ff00A Star of Dorn|r: Get 21 Renown with Council of Dorn before you care about this, Speak with the NPC's at /way 56.79 52.19\n\n|cff00ff00We're here all night|r: Complete each variation of the Theatre Troupe, they rotate hourly just keep an eye out at about 5m which one is next.\n\n|cff00ff00Rocked to Sleep|r: Click Button below to import waypoints, read the plaques\n\n|cff00ff00Treasures of the Isle of Dorn|r: Click below Button to import Tom Tom waypoints. For Tree's Treasure you will need to find the 6 crabs and bring them to the tree. For Magical treasure chest you will need to collect 5 plump snapcrabs and feel them to lionel. For Mushroom Cap you will need to get his hat at 53.07 68.33 and for Turtle's thanks you will need to give him 5 Dornish pike, 1 fish and chips and 1 Goldengill Trout.")
 
 -- =========================
--- Add All Waypoints Button
+-- Add Rocked to Sleep Waypoints Button (Smart Version)
 -- =========================
+local ROCKED_TO_SLEEP_ID = 40504
+
 local addWaypointsBtn = CreateFrame("Button", nil, slateOfTheUnionFrame, "UIPanelButtonTemplate")
-addWaypointsBtn:SetSize(250, 30)
+addWaypointsBtn:SetSize(300, 30)
 addWaypointsBtn:SetPoint("BOTTOMRIGHT", -20, -400)
-addWaypointsBtn:SetText("Rocked to Sleep Tom Tom waypoints")
+addWaypointsBtn:SetText("Rocked to Sleep (Add Missing to TomTom)")
 
 addWaypointsBtn:SetScript("OnClick", function()
     if not TomTom then
@@ -169,11 +171,32 @@ addWaypointsBtn:SetScript("OnClick", function()
         { map = 2214, x = 38.97, y = 40.87, title = "Krattdaz" },
     }
 
-    for _, wp in ipairs(waypoints) do
-        TomTom:AddWaypoint(wp.map, wp.x / 100, wp.y / 100, { title = wp.title })
+    local added = 0
+    local missing = {}
+
+    -- Iterate over achievement criteria and match to waypoint names
+    local numCriteria = GetAchievementNumCriteria(ROCKED_TO_SLEEP_ID)
+    for i = 1, numCriteria do
+        local critName, _, completed = GetAchievementCriteriaInfo(ROCKED_TO_SLEEP_ID, i)
+        if critName and not completed then
+            -- Find matching waypoint by title
+            for _, wp in ipairs(waypoints) do
+                if string.find(string.lower(wp.title), string.lower(critName), 1, true) then
+                    TomTom:AddWaypoint(wp.map, wp.x / 100, wp.y / 100, { title = wp.title })
+                    added = added + 1
+                    table.insert(missing, wp.title)
+                    break
+                end
+            end
+        end
     end
 
-    print("|cff00ff00[Muus Meta Helper]|r Added " .. #waypoints .. " waypoints to TomTom!")
+    if added > 0 then
+        print("|cff00ff00[Muus Meta Helper]|r Added " .. added .. " missing Rocked to Sleep waypoints to TomTom!")
+        print("|cffffff00Missing NPCs:|r " .. table.concat(missing, ", "))
+    else
+        print("|cff00ff00[Muus Meta Helper]|r You've completed Rocked to Sleep! No plaques.")
+    end
 end)
 
 local addTreasureWaypointsBtn = CreateFrame("Button", nil, slateOfTheUnionFrame, "UIPanelButtonTemplate")
