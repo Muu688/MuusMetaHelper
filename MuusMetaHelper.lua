@@ -86,7 +86,7 @@ paragraph:SetPoint("TOPLEFT")
 paragraph:SetWidth(300)
 paragraph:SetJustifyH("LEFT")
 paragraph:SetJustifyV("TOP")
-paragraph:SetText("Welcome to the Overview tab!\n\nI\'m a new addon developer so things may be shonky/broken but i'm trying my best\n\nI would consider having a weekly chore-list so that you're not grinding things out late. If you don't have rep with the required base factions consider doing at least,\n- Theatre troop\n- Awakening the Machine\n- Azj-Kahet 4 WQ for pact quest weekly\n- Siren Isle 'Epic Quest' or whatever it is as that's on weekly rotation so you want to be eating those up.\n\n\nThe 'Check World Quests' button will check the world quests needed relating to the acheivments 'Worm Theory' and 'Children's Entertainer' as those are on rotation and may not always be up, it's a good idea to press it regularly and check on what you need.")
+paragraph:SetText("Welcome to the Overview tab!\n\nI\'m a new addon developer so things may be shonky/broken but I'm trying my best\n\nI would consider having a weekly chore-list so that you're not grinding things out late. If you don't have rep with the required base factions consider doing at least,\n- Theatre troop\n- Awakening the Machine\n- Azj-Kahet 4 WQ for pact quest weekly\n- Siren Isle 'Epic Quest' or whatever it is as that's on weekly rotation so you want to be eating those up.\n\n\nThe 'Check World Quests' button will check the world quests needed relating to the acheivments 'Worm Theory' and 'Children's Entertainer' as those are on rotation and may not always be up, it's a good idea to press it regularly and check on what you need.")
 
 -- Make sure frame resizes based on text height
 textFrame:SetHeight(paragraph:GetStringHeight())
@@ -256,17 +256,18 @@ delveButton:SetScript("OnClick", CheckDelveVariants)
 local DELVE_URLS = {
     ["Fungal Folly"] = "https://imgur.com/LTo0kWw",
     ["Earthcrawl Mines"] = "https://imgur.com/oobJCjT",
+    ["Kriegval's Rest"] = "https://imgur.com/c3DmZn2",
+    ["Excavation Site 9"] = "https://www.wowhead.com/maps?data=15836:730400570470500610330580",
+    ["The Waterworks"] = "https://imgur.com/eycJIpa",
     ["The Dread Pit"] = "https://imgur.com/CIQtt1k",
     ["Mycomancer Cavern"] = "https://imgur.com/6Tj9g8u",
     ["Skittering Breach"] = "https://imgur.com/L7Bj29x",
-    ["Tak-Rethan Abyss"] = "https://imgur.com/l90VdUn",
-    ["Excavation Site 9"] = "https://imgur.com/XXXXX",
-    ["Archival Assault"] = "https://imgur.com/XXXXX",
-    ["Kriegval's Rest"] = "https://imgur.com/c3DmZn2",
-    ["The Waterworks"] = "https://imgur.com/eycJIpa",
+    ["The Sinkhole"] = "https://imgur.com/685MraM",
     ["Nightfall Sanctum"] = "https://imgur.com/hmQHWYz",
-    ["Sidestreet Sluice"] = "https://www.youtube.com/watch?v=k2MCkCll880",
+    ["Tak-Rethan Abyss"] = "https://imgur.com/l90VdUn",
+    ["Spiral Weave"] = "https://imgur.com/TgS0cQb",
     ["The Underkeep"] = "https://www.youtube.com/watch?v=sjQxlqxfrls",
+    ["Sidestreet Sluice"] = "https://www.youtube.com/watch?v=k2MCkCll880",
     ["Archival Assault"] = "https://www.youtube.com/watch?v=YCbHyzWQ570",
 }
 -- =========================
