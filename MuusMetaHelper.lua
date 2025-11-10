@@ -57,7 +57,7 @@ for i, tabName in ipairs(TAB_NAMES) do
 
     local text = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     text:SetPoint("CENTER")
-    if i == 2 or i == 3 or i == 4 or i == 5 then
+    if i == 3 or i == 4 or i == 5 then
         text:SetText(tabName .. " is in Development")
     end
 
@@ -118,6 +118,119 @@ end
 
 -- Connect the button click to the function
 checkButton:SetScript("OnClick", CheckWorldQuests)
+
+-------------------------------------------------
+-- Slate of the Union Tab Custom Content
+-------------------------------------------------
+local slateOfTheUnionFrame = contentFrames[2]  -- make sure index matches your tab
+
+-- Scroll frame container
+local scrollFrame = CreateFrame("ScrollFrame", nil, slateOfTheUnionFrame, "UIPanelScrollFrameTemplate")
+scrollFrame:SetPoint("TOPLEFT", 20, -80)
+scrollFrame:SetSize(500, 500)
+
+-- Child frame for the text
+local textFrame = CreateFrame("Frame", nil, scrollFrame)
+textFrame:SetSize(320, 1) -- width must match scroll frame
+scrollFrame:SetScrollChild(textFrame)
+
+-- FontString for paragraph text
+local paragraph = textFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+paragraph:SetPoint("TOPLEFT")
+paragraph:SetWidth(300)
+paragraph:SetJustifyH("LEFT")
+paragraph:SetJustifyV("TOP")
+paragraph:SetText("|cff00ff00Adventurer of the Isle of Dorn|r: Consider downloading the addon 'rarescanner' - Kill Heaps of Rares. You will probably get this during the Rep Grind and/or Loremaster of Khaz'algar acheivement. WM On however seems to be an efficient way to farm these.\n\n|cff00ff00Flat Earthen|r: Stand under the stamp press in Dornogol near the Teleporter to Undermine.\n\n|cff00ff00A Star of Dorn|r: Get 21 Renown with Council of Dorn before you care about this, Speak with the NPC's at /way 56.79 52.19\n\n|cff00ff00We're here all night|r: Complete each variation of the Theatre Troupe, they rotate hourly just keep an eye out at about 5m which one is next.\n\n|cff00ff00Rocked to Sleep|r: Click Button below to import waypoints, read the plaques\n\n|cff00ff00Treasures of the Isle of Dorn|r: Click below Button to import Tom Tom waypoints. For Tree's Treasure you will need to find the 6 crabs and bring them to the tree. For Magical treasure chest you will need to collect 5 plump snapcrabs and feel them to lionel. For Mushroom Cap you will need to get his hat at 53.07 68.33 and for Turtle's thanks you will need to give him 5 Dornish pike, 1 fish and chips and 1 Goldengill Trout.")
+
+-- =========================
+-- Add All Waypoints Button
+-- =========================
+local addWaypointsBtn = CreateFrame("Button", nil, slateOfTheUnionFrame, "UIPanelButtonTemplate")
+addWaypointsBtn:SetSize(250, 30)
+addWaypointsBtn:SetPoint("BOTTOMRIGHT", -20, -400)
+addWaypointsBtn:SetText("Rocked to Sleep Tom Tom waypoints")
+
+addWaypointsBtn:SetScript("OnClick", function()
+    if not TomTom then
+        print("|cffff0000[Muus Meta Helper]|r TomTom not found! Please enable the TomTom addon.")
+        return
+    end
+
+    local waypoints = {
+        { map = 2214, x = 44.42, y = 31.75, title = "Venedaz" },
+        { map = 2214, x = 40.20, y = 13.55, title = "Hathlaz" },
+        { map = 2214, x = 50.89, y = 30.23, title = "Uisgaz" },
+        { map = 2214, x = 58.70, y = 36.34, title = "Attwogaz" },
+        { map = 2214, x = 59.91, y = 55.76, title = "Sathilga" },
+        { map = 2214, x = 61.26, y = 83.78, title = "Gundrig" },
+        { map = 2214, x = 55.04, y = 93.71, title = "Merunth" },
+        { map = 2214, x = 44.38, y = 70.67, title = "Alfritha" },
+        { map = 2214, x = 45.22, y = 49.03, title = "Varerko" },
+        { map = 2214, x = 38.97, y = 40.87, title = "Krattdaz" },
+    }
+
+    for _, wp in ipairs(waypoints) do
+        TomTom:AddWaypoint(wp.map, wp.x / 100, wp.y / 100, { title = wp.title })
+    end
+
+    print("|cff00ff00[Muus Meta Helper]|r Added " .. #waypoints .. " waypoints to TomTom!")
+end)
+
+local addTreasureWaypointsBtn = CreateFrame("Button", nil, slateOfTheUnionFrame, "UIPanelButtonTemplate")
+addTreasureWaypointsBtn:SetSize(250, 30)
+addTreasureWaypointsBtn:SetPoint("BOTTOMRIGHT", -20, -450)
+addTreasureWaypointsBtn:SetText("Treasures of the Isle of Dorn Waypoints")
+
+addTreasureWaypointsBtn:SetScript("OnClick", function()
+    if not TomTom then
+        print("|cffff0000[Muus Meta Helper]|r TomTom not found! Please enable the TomTom addon.")
+        return
+    end
+
+    -- Map ID for this zone (replace 2214 if it's different)
+    local mapID = 2214
+
+    local waypoints = {
+        { x = 48.59, y = 30.07, title = "Tree's Treasure NPC" },
+        { x = 38.36, y = 41.94, title = "Tree's Treasure Crab 1 (on the tree)" },
+        { x = 19.71, y = 58.44, title = "Tree's Treasure Crab 2 (at the tree)" },
+        { x = 50.71, y = 70.55, title = "Tree's Treasure Crab 3 (at the tree)" },
+        { x = 74.90, y = 49.69, title = "Tree's Treasure Crab 4 (at the tree)" },
+        { x = 70.75, y = 20.01, title = "Tree's Treasure Crab 5 (on the rock)" },
+        { x = 41.82, y = 27.04, title = "Tree's Treasure Crab 6 (at the tree)" },
+
+        { x = 40.65, y = 59.88, title = "Magical Treasure Chest" },
+
+        { x = 55.02, y = 65.62, title = "Mushroom Cap (NPC)" },
+        { x = 53.07, y = 68.33, title = "Mushroom Cap (Hat at the tree)" },
+
+        { title = "Mosswool Flower" },
+        { x = 77.27, y = 24.48, title = "Jade Pearl" },
+        { x = 56.17, y = 60.91, title = "Infused Cinderbrew" },
+        { x = 40.89, y = 73.80, title = "Turtle's Thanks" },
+
+        { x = 54.00, y = 19.14, title = "Mysterious Orb (NPC)" },
+        { x = 53.05, y = 18.57, title = "Mysterious Orb (pearl at the bottom of waterfall)" },
+
+        { x = 38.05, y = 43.54, title = "Thak's Treasure" },
+        { x = 62.53, y = 43.20, title = "Kobold Pickaxe" },
+        { x = 48.88, y = 60.92, title = "Shimmering Opal Lily (bottom of cave)" },
+        { x = 59.11, y = 23.51, title = "Web-Wrapped Axe" },
+    }
+
+    local added = 0
+    for _, wp in ipairs(waypoints) do
+        if wp.x and wp.y then
+            TomTom:AddWaypoint(mapID, wp.x / 100, wp.y / 100, { title = wp.title })
+            added = added + 1
+        else
+            print("|cffffff00[Muus Meta Helper]|r Skipped waypoint: " .. wp.title .. " (missing coordinates)")
+        end
+    end
+
+    print("|cff00ff00[Muus Meta Helper]|r Added " .. added .. " treasure waypoints to TomTom!")
+end)
+
 -------------------------------------------------
 -- Delve Loremaster Tab Custom Content
 -------------------------------------------------
@@ -161,7 +274,7 @@ tipsFrame:SetSize(580, 1)
 tipsScroll:SetScrollChild(tipsFrame)
 
 
-local delveTipText = "Sporesweeper: Complete a Fungarian Delve Tier 8 or higher without getting hit by Sporebit (Spore bomb circle things) - going close causes them to grow and after 5s they explore. Best way to tackle this is to just take your time through the delve.\n\nSpider Senses: Complete a Nerubian Delve (Earthcrawl Mines, The Dread Pit, The Spiral Weave, The Underkeep) without spawning ambushers from Nerubian Webs, or taking damage from Nerubian Eggs on Tier 8 or Higher. Don't step on any nerubian webs or standing near them. Pretty much take your time and avoid things.\n\nDaystormer: Complete an Order of the Night Delve (Nightfall Sanctum) on Tier 8 without being targeted by Artillery fire (Don't stand in purple circles)\n\nBrann Development: For the most part ignore this, it will probably complete as you complete the other parts of Glory of the Delver, but Brann needs to be level 25.\n\nMy Stab Happy Nemesis: Defeat Nexus Princess Ky'vesa in her Delve (/way Tazavesh 38.91 51.82)\n\nLeave No Treasure Unfound: Click the buttons to get links to where to find the chests. They are not always available and may require a specific story varient(s) to obtain all treasure chests for a single delve. (Thanks Wowhead user Wiciregord for creating these maps)"
+local delveTipText = "|cff00ff00Sporesweeper|r: Complete a Fungarian Delve Tier 8 or higher without getting hit by Sporebit (Spore bomb circle things) - going close causes them to grow and after 5s they explore. Best way to tackle this is to just take your time through the delve.\n\n|cff00ff00Spider Senses|r: Complete a Nerubian Delve (Earthcrawl Mines, The Dread Pit, The Spiral Weave, The Underkeep) without spawning ambushers from Nerubian Webs, or taking damage from Nerubian Eggs on Tier 8 or Higher. Don't step on any nerubian webs or standing near them. Pretty much take your time and avoid things.\n\n|cff00ff00Daystormer|r: Complete an Order of the Night Delve (Nightfall Sanctum) on Tier 8 without being targeted by Artillery fire (Don't stand in purple circles)\n\n|cff00ff00Brann Development|r: For the most part ignore this, it will probably complete as you complete the other parts of Glory of the Delver, but Brann needs to be level 25.\n\n|cff00ff00My Stab Happy Nemesis|r: Defeat Nexus Princess Ky'vesa in her Delve (/way Tazavesh 38.91 51.82)\n\n|cff00ff00Leave No Treasure Unfound|r: Click the buttons to get links to where to find the chests. They are not always available and may require a specific story varient(s) to obtain all treasure chests for a single delve. (Thanks Wowhead user Wiciregord for creating these maps)"
 local tipsText = tipsFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
 tipsText:SetPoint("TOPLEFT")
 tipsText:SetWidth(560)
@@ -234,7 +347,8 @@ local function CheckDelveVariants()
             end
 
             if #missingVariants > 0 then
-                table.insert(outputLines, delve.name .. " missing variants: " .. table.concat(missingVariants, ", "))
+                local coloredName = "|cff00ff00" .. delve.name .. "|r"  -- bright green
+                table.insert(outputLines, coloredName .. " missing variants: " .. table.concat(missingVariants, ", "))
             end
         end
     end
@@ -265,7 +379,7 @@ local DELVE_URLS = {
     ["The Sinkhole"] = "https://imgur.com/685MraM",
     ["Nightfall Sanctum"] = "https://imgur.com/hmQHWYz",
     ["Tak-Rethan Abyss"] = "https://imgur.com/l90VdUn",
-    ["Spiral Weave"] = "https://imgur.com/TgS0cQb",
+    ["Spiral Weave"] = "https://imgur.com/a/ZPZp0FE",
     ["The Underkeep"] = "https://www.youtube.com/watch?v=sjQxlqxfrls",
     ["Sidestreet Sluice"] = "https://www.youtube.com/watch?v=k2MCkCll880",
     ["Archival Assault"] = "https://www.youtube.com/watch?v=YCbHyzWQ570",
@@ -283,7 +397,7 @@ local buttonSpacingY = 10
 local startX = 20
 local startY = -500
 
-for i = 1, 11 do
+for i = 1, 15 do
     local delve = DELVES[i]
     if delve then
         local row = math.floor((i-1) / buttonsPerRow)
