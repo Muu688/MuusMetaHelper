@@ -57,7 +57,7 @@ for i, tabName in ipairs(TAB_NAMES) do
 
     local text = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     text:SetPoint("CENTER")
-    if i == 3 or i == 4 or i == 5 then
+    if i == 3 or i == 5 then
         text:SetText(tabName .. " is in Development")
     end
 
@@ -255,6 +255,145 @@ addTreasureWaypointsBtn:SetScript("OnClick", function()
 end)
 
 -------------------------------------------------
+-- Crystal Chronicled Tab Custom Content
+-------------------------------------------------
+local crystalChronicled = contentFrames[4]  -- make sure index matches your tab
+
+-- Scroll frame container
+local scrollFrame = CreateFrame("ScrollFrame", nil, crystalChronicled, "UIPanelScrollFrameTemplate")
+scrollFrame:SetPoint("TOPLEFT", 20, -80)
+scrollFrame:SetSize(500, 500)
+
+-- Child frame for the text
+local textFrame = CreateFrame("Frame", nil, scrollFrame)
+textFrame:SetSize(320, 1) -- width must match scroll frame
+scrollFrame:SetScrollChild(textFrame)
+
+-- FontString for paragraph text
+local paragraph = textFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+paragraph:SetPoint("TOPLEFT")
+paragraph:SetWidth(300)
+paragraph:SetJustifyH("LEFT")
+paragraph:SetJustifyV("TOP")
+paragraph:SetText("|cff00ff00Adventurer of Hallowfall|r: Consider downloading the addon 'rarescanner' to help here. Rares are best farmed WM On. Most of these might be acquired while trying to get Loremaster of Khaz'algar or Khaz Algar Diplomat as they can be farmed for Rep.\n\n|cff00ff00The Missing Lynx|r: Several Lynx require a Keyflame or Lesser keyflame to be active. Simply go to the nearby Keyflame and spend the items until it lights up.\n\n|cff00ff00Biblo Archivist|r: You will need to go around and collect books. They are lootable items (i.e. on the ground) right click to loot them. Click the button below to import any remaining way points in Tom Tom.\n\n|cff00ff00Sharing the Light|r: Acheivement Guide here\n\n|cff00ff00Igniting the Keyflames|r: Acheivement Guide here\n\n|cff00ff00Treasures of Hallowfall|r: Acheivement Guide here\n\n|cff00ff00Mereldar Menace|r: Acheivement Guide here\n\n|cff00ff00Beacon of Hope|r: Acheivement Guide here\n\n|cff00ff00Lost and Found|r: Acheivement Guide here\n\n|cff00ff00Children's Entertainer|r: Acheivement Guide here\n\n")
+
+-- =========================
+-- Add Missing Lynx Waypoints Button
+-- =========================
+local MISSING_LYNX_ID = 40625
+
+local addWaypointsBtn = CreateFrame("Button", nil, crystalChronicled, "UIPanelButtonTemplate")
+addWaypointsBtn:SetSize(300, 30)
+addWaypointsBtn:SetPoint("BOTTOMRIGHT", -20, -400)
+addWaypointsBtn:SetText("The Missing Lynx (Add Missing to TomTom)")
+
+addWaypointsBtn:SetScript("OnClick", function()
+    if not TomTom then
+        print("|cffff0000[Muus Meta Helper]|r TomTom not found! Please enable the TomTom addon.")
+        return
+    end
+
+    local missingLynxWaypoints = {
+        { map = 2215, x = 42.69, y = 53.84, title = "Evan and Emery" },
+        { map = 2215, x = 42.30, y = 53.81, title = "Jinx and Gobbo" },
+        { map = 2215, x = 69.27, y = 43.72, title = "Iggy and Moog" },
+        { map = 2215, x = 64.44, y = 18.57, title = "Fuzzy and Furball" },
+        { map = 2215, x = 61.92, y = 20.81, title = "Dander" },
+        { map = 2215, x = 63.79, y = 29.32, title = "Purrlock (Available when Light's Blooming Keyflame is active)" },
+        { map = 2215, x = 63.26, y = 28.11, title = "Shadowpounder (Available when Light's Blooming Keyflame is active)" },
+        { map = 2215, x = 61.19, y = 30.54, title = "Miral Murder-Mittens" },
+        { map = 2215, x = 63.31, y = 29.41, title = "Nightclaw (Available when Light's Blooming Keyflame is active)" },
+        { map = 2215, x = 60.42, y = 60.22, title = "Magpie" },
+    }
+
+    local added = 0
+    local missing = {}
+
+    -- Iterate over achievement criteria and match to waypoint names
+    local numCriteria = GetAchievementNumCriteria(MISSING_LYNX_ID)
+    for i = 1, numCriteria do
+        local critName, _, completed = GetAchievementCriteriaInfo(MISSING_LYNX_ID, i)
+        if critName and not completed then
+            -- Find matching waypoint by title
+            for _, wp in ipairs(missingLynxWaypoints) do
+                if string.find(string.lower(wp.title), string.lower(critName), 1, true) then
+                    TomTom:AddWaypoint(wp.map, wp.x / 100, wp.y / 100, { title = wp.title })
+                    added = added + 1
+                    table.insert(missing, wp.title)
+                    break
+                end
+            end
+        end
+    end
+
+    if added > 0 then
+        print("|cff00ff00[Muus Meta Helper]|r Added " .. added .. " missing 'Missing Lynx' waypoints to TomTom!")
+        print("|cffffff00Missing NPCs:|r " .. table.concat(missing, ", "))
+    else
+        print("|cff00ff00[Muus Meta Helper]|r You've completed Missing Lynx! No lynx left to pat.")
+    end
+end)
+
+
+-- =========================
+-- Add Biblo Archivist Waypoints Button
+-- =========================
+local BIBLO_ARCHIVIST_ACH_ID = 40622
+
+local addWaypointsBtn = CreateFrame("Button", nil, crystalChronicled, "UIPanelButtonTemplate")
+addWaypointsBtn:SetSize(300, 30)
+addWaypointsBtn:SetPoint("BOTTOMRIGHT", -20, -450)
+addWaypointsBtn:SetText("The Biblo Archivist (Add Missing to TomTom)")
+
+addWaypointsBtn:SetScript("OnClick", function()
+    if not TomTom then
+        print("|cffff0000[Muus Meta Helper]|r TomTom not found! Please enable the TomTom addon.")
+        return
+    end
+
+    local booksWaypoints = {
+        { map = 2215, x = 43.91, y = 49.95, title = "500 Dishes Using Cave Fish and Mushrooms" },
+        { map = 2215, x = 48.11, y = 39.56, title = "The Big Book of Arathi Idioms" },
+        { map = 2215, x = 48.75, y = 64.71, title = "Palawltar's Codex of Dimensional Structure" },
+        { map = 2215, x = 52.64, y = 60.01, title = "Lightspark Grade Book" },
+        { map = 2215, x = 56.56, y = 65.18, title = "Beledar - The Emperor's Vision" },
+        { map = 2215, x = 57.79, y = 51.77, title = "From the Depths They Come" },
+        { map = 2215, x = 59.81, y = 22.11, title = "Shadow Curfew Journal" },
+        { map = 2215, x = 64.21, y = 28.09, title = "Shadow Curfew Guidelines" },
+        { map = 2215, x = 68.69, y = 41.42, title = "Light's Gambit Playbook" },
+        { map = 2215, x = 69.36, y = 43.98, title = "Care and Feeding of the Imperial Lynx" },
+        { map = 2215, x = 70.21, y = 56.85, title = "The Song of Renilash" },
+    }
+
+    local added = 0
+    local missing = {}
+
+    -- Iterate over achievement criteria and match to waypoint names
+    local numCriteria = GetAchievementNumCriteria(BIBLO_ARCHIVIST_ACH_ID)
+    for i = 1, numCriteria do
+        local critName, _, completed = GetAchievementCriteriaInfo(BIBLO_ARCHIVIST_ACH_ID, i)
+        if critName and not completed then
+            -- Find matching waypoint by title
+            for _, wp in ipairs(missingLynxWaypoints) do
+                if string.find(string.lower(wp.title), string.lower(critName), 1, true) then
+                    TomTom:AddWaypoint(wp.map, wp.x / 100, wp.y / 100, { title = wp.title })
+                    added = added + 1
+                    table.insert(missing, wp.title)
+                    break
+                end
+            end
+        end
+    end
+
+    if added > 0 then
+        print("|cff00ff00[Muus Meta Helper]|r Added " .. added .. " missing 'Biblo Archivist' waypoints to TomTom!")
+        print("|cffffff00Missing NPCs:|r " .. table.concat(missing, ", "))
+    else
+        print("|cff00ff00[Muus Meta Helper]|r You've completed Biblo Archivist! You've collected all the books.")
+    end
+end)
+
+-------------------------------------------------
 -- Delve Loremaster Tab Custom Content
 -------------------------------------------------
 local delveLoremasterFrame = contentFrames[6]  -- make sure index matches your tab
@@ -272,7 +411,7 @@ delveButton:SetText("Check Delve Loremaster Progress")
 -- =========================
 local progressScroll = CreateFrame("ScrollFrame", nil, delveLoremasterFrame, "UIPanelScrollFrameTemplate")
 progressScroll:SetPoint("TOPLEFT", 20, -50)
-progressScroll:SetSize(600, 200)
+progressScroll:SetSize(700, 200)
 
 local progressFrame = CreateFrame("Frame", nil, progressScroll)
 progressFrame:SetSize(580, 1)
@@ -290,7 +429,7 @@ progressText:SetText("")  -- initially empty
 -- =========================
 local tipsScroll = CreateFrame("ScrollFrame", nil, delveLoremasterFrame, "UIPanelScrollFrameTemplate")
 tipsScroll:SetPoint("TOPLEFT", 20, -270) -- below the progress frame
-tipsScroll:SetSize(600, 200)
+tipsScroll:SetSize(700, 300)
 
 local tipsFrame = CreateFrame("Frame", nil, tipsScroll)
 tipsFrame:SetSize(580, 1)
