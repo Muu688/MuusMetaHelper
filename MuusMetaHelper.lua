@@ -21,6 +21,9 @@ frame:RegisterForDrag("LeftButton")
 frame:SetScript("OnDragStart", frame.StartMoving)
 frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
 
+local closeButton = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
+closeButton:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -5, -5) -- adjust offsets
+
 -- Title text
 local title = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
 title:SetPoint("TOP", 0, -10)
