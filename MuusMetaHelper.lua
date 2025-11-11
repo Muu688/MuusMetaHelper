@@ -73,7 +73,7 @@ local overviewFrame = contentFrames[1]
 -- Scroll frame container
 local scrollFrame = CreateFrame("ScrollFrame", nil, overviewFrame, "UIPanelScrollFrameTemplate")
 scrollFrame:SetPoint("TOPLEFT", 20, -80)
-scrollFrame:SetSize(500, 500)
+scrollFrame:SetSize(500, 300)
 
 -- Child frame for the text
 local textFrame = CreateFrame("Frame", nil, scrollFrame)
@@ -90,7 +90,6 @@ paragraph:SetText("Welcome to the Overview tab!\n\nI\'m a new addon developer so
 
 -- Make sure frame resizes based on text height
 textFrame:SetHeight(paragraph:GetStringHeight())
-
 
 -- Create a "Check World Quests" button
 local checkButton = CreateFrame("Button", nil, overviewFrame, "UIPanelButtonTemplate")
@@ -118,6 +117,109 @@ end
 
 -- Connect the button click to the function
 checkButton:SetScript("OnClick", CheckWorldQuests)
+
+local content = CreateFrame("Frame", nil, overviewFrame)
+content:SetSize(360, 220)
+content:SetPoint("TOPLEFT", 20, -320)
+local progressTextHeader = content:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+progressTextHeader:SetPoint("CENTER")
+progressTextHeader:SetText("Remaining Acheivements")
+
+-------------------------------------------------
+-- Meta Achievement Progress Tracker
+-------------------------------------------------
+-- Place this section lower in the Overview tab
+local metaFrame = CreateFrame("Frame", "MetaAchievementProgressFrame", overviewFrame)
+metaFrame:SetSize(500, 300)
+metaFrame:SetPoint("TOPLEFT", 20, -450)  -- move below intro scroll box
+
+-- Scroll Frame
+local scroll = CreateFrame("ScrollFrame", nil, metaFrame, "UIPanelScrollFrameTemplate")
+scroll:SetPoint("TOPLEFT", 0, 0)
+scroll:SetSize(650, 350)
+
+-- Scroll Child Frame
+local scrollChild = CreateFrame("Frame", nil, scroll)
+scrollChild:SetSize(640, 1)
+scroll:SetScrollChild(scrollChild)
+
+-- FontString for output
+local progressText = scrollChild:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+progressText:SetPoint("TOPLEFT")
+progressText:SetWidth(620)
+progressText:SetJustifyH("LEFT")
+progressText:SetJustifyV("TOP")
+
+-- ==========================================
+-- ACHIEVEMENT HIERARCHY
+-- ==========================================
+local META_ACHIEVEMENTS = {
+    { name = "You Xal Not Pass", id = 41201 },
+    { name = "Nerub-ar Palace", id = 40244 },
+    { name = "Manaforge Omega", id = 41598 },
+    { name = "Rage Aside the Machine", id = 41187 },
+    { name = "Slate of the Union", id = 41186 },
+    { name = "Crystal Chronicled", id = 41188 },
+    { name = "Azj the World Turns", id = 41189 },
+    { name = "Isle Remember You", id = 41133 },
+    { name = "Glory of the Delver", id = 40438 },
+    { name = "Owner of a Radiant Heart", id = 41997 },
+    { name = "Liberation of Undermine", id = 41222 },
+    { name = "All That Khaz", id = 41555 },
+    { name = "Unraveled and Persevering", id = 60889 },
+    { name = "Going Goblin Mode", id = 41586 },
+    { name = "The War Within Pathfinder", id = 40231 },
+}
+
+-- ==========================================
+-- Recursive Check Function
+-- ==========================================
+local function CheckAchievementTree(achievements, indent)
+    local lines = {}
+
+    for _, ach in ipairs(achievements) do
+        local _, _, _, completed = GetAchievementInfo(ach.id)
+        if not completed then
+            table.insert(lines, string.rep("  ", indent) .. "|cffffd100" .. ach.name .. "|r")
+
+            local numCriteria = GetAchievementNumCriteria(ach.id)
+            if numCriteria and numCriteria > 0 then
+                for i = 1, numCriteria do
+                    local critName, _, critCompleted = GetAchievementCriteriaInfo(ach.id, i)
+                    if critName and not critCompleted then
+                        table.insert(lines, string.rep("  ", indent + 1) .. "- " .. critName)
+                    end
+                end
+            end
+
+            if ach.sub then
+                local subLines = CheckAchievementTree(ach.sub, indent + 1)
+                for _, line in ipairs(subLines) do
+                    table.insert(lines, line)
+                end
+            end
+        end
+    end
+
+    return lines
+end
+
+-- ==========================================
+-- Display Missing Achievements
+-- ==========================================
+local function ShowMissingAchievements()
+    local lines = CheckAchievementTree(META_ACHIEVEMENTS, 0)
+
+    if #lines == 0 then
+        progressText:SetText("|cff00ff00All achievements complete!|r")
+    else
+        progressText:SetText(table.concat(lines, "\n"))
+    end
+
+    scrollChild:SetHeight(progressText:GetStringHeight())
+end
+
+ShowMissingAchievements()
 
 -------------------------------------------------
 -- Slate of the Union Tab Custom Content
@@ -396,15 +498,14 @@ end)
 -------------------------------------------------
 -- Delve Loremaster Tab Custom Content
 -------------------------------------------------
-local delveLoremasterFrame = contentFrames[6]  -- make sure index matches your tab
+local delveLoremasterFrame = contentFrames[6]
 
--- =========================
--- Check Delve Progress Button
--- =========================
-local delveButton = CreateFrame("Button", nil, delveLoremasterFrame, "UIPanelButtonTemplate")
-delveButton:SetSize(300, 30)
-delveButton:SetPoint("TOP", 0, -10)
-delveButton:SetText("Check Delve Loremaster Progress")
+local delveTitleContent = CreateFrame("Frame", nil, delveLoremasterFrame)
+delveTitleContent:SetSize(360, 220)
+delveTitleContent:SetPoint("TOPLEFT", 0, 70)
+local delveLoremasterHeader = delveTitleContent:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+delveLoremasterHeader:SetPoint("CENTER")
+delveLoremasterHeader:SetText("Delve Loremaster Remaining Stories")
 
 -- =========================
 -- Scrollable Frame: Progress Output
@@ -526,7 +627,8 @@ local function CheckDelveVariants()
 end
 
 -- Connect button to function
-delveButton:SetScript("OnClick", CheckDelveVariants)
+-- delveButton:SetScript("OnClick", CheckDelveVariants)
+CheckDelveVariants()
 
 -- URLs for each delve
 local DELVE_URLS = {
