@@ -377,7 +377,7 @@ paragraph:SetPoint("TOPLEFT")
 paragraph:SetWidth(300)
 paragraph:SetJustifyH("LEFT")
 paragraph:SetJustifyV("TOP")
-paragraph:SetText("|cff00ff00Adventurer of Hallowfall|r: Consider downloading the addon 'rarescanner' to help here. Rares are best farmed WM On. Most of these might be acquired while trying to get Loremaster of Khaz'algar or Khaz Algar Diplomat as they can be farmed for Rep.\n\n|cff00ff00The Missing Lynx|r: Several Lynx require a Keyflame or Lesser keyflame to be active. Simply go to the nearby Keyflame and spend the items until it lights up.\n\n|cff00ff00Biblo Archivist|r: You will need to go around and collect books. They are lootable items (i.e. on the ground) right click to loot them. Click the button below to import any remaining way points in Tom Tom.\n\n|cff00ff00Sharing the Light|r: Acheivement Guide here\n\n|cff00ff00Igniting the Keyflames|r: Acheivement Guide here\n\n|cff00ff00Treasures of Hallowfall|r: Acheivement Guide here\n\n|cff00ff00Mereldar Menace|r: Acheivement Guide here\n\n|cff00ff00Beacon of Hope|r: Acheivement Guide here\n\n|cff00ff00Lost and Found|r: Acheivement Guide here\n\n|cff00ff00Children's Entertainer|r: Acheivement Guide here\n\n")
+paragraph:SetText("|cff00ff00Adventurer of Hallowfall|r: Consider downloading the addon 'rarescanner' to help here. Rares are best farmed WM On. Most of these might be acquired while trying to get Loremaster of Khaz'algar or Khaz Algar Diplomat as they can be farmed for Rep.\n\n|cff00ff00The Missing Lynx|r: Several Lynx require a Keyflame or Lesser keyflame to be active. Simply go to the nearby Keyflame and spend the items until it lights up.\n\n|cff00ff00Biblo Archivist|r: You will need to go around and collect books. They are lootable items (i.e. on the ground) right click to loot them. Click the button below to import any remaining way points in Tom Tom.\n\n|cff00ff00Sharing the Light|r: Acheivement Guide here\n\n|cff00ff00Igniting the Keyflames|r: Acheivement Guide here\n\n|cff00ff00Treasures of Hallowfall|r: You will need to fly around and collect various treasures around Hallowfall, the button below will import all remaining waypoints into Tom Tom.\n\n|cff00ff00Mereldar Menace|r: Acheivement Guide here\n\n|cff00ff00Beacon of Hope|r: Acheivement Guide here\n\n|cff00ff00Lost and Found|r: Acheivement Guide here\n\n|cff00ff00Children's Entertainer|r: This is reliant on the world quest 'Work Hard, Play Hard' in Hallowfall. It can be completed in one sitting using multiple alts. Recommend using a Warlock to complete the Floor is Undersea challenge by putting a summon circle at the end post on the fence. Note: Never do 'Challenges' first as they count as multiple completions. Do as many regular versions before completing a single challenge version. For the hide and seek Challenge\n\n")
 
 -- =========================
 -- Add Missing Lynx Waypoints Button
@@ -436,6 +436,82 @@ addWaypointsBtn:SetScript("OnClick", function()
     end
 end)
 
+-- =========================
+-- Add Treasures of Hallowfall Waypoints Button
+-- =========================
+local addTreasureWaypointsBtn = CreateFrame("Button", nil, crystalChronicled, "UIPanelButtonTemplate")
+addTreasureWaypointsBtn:SetSize(280, 30)
+addTreasureWaypointsBtn:SetPoint("BOTTOMRIGHT", -20, -490)
+addTreasureWaypointsBtn:SetText("Treasures of Hallowfall Waypoints")
+
+addTreasureWaypointsBtn:SetScript("OnClick", function()
+    if not TomTom then
+        print("|cffff0000[Muus Meta Helper]|r TomTom not found! Please enable the TomTom addon.")
+        return
+    end
+
+    local mapID = 2215
+    local achievementID = 40848 -- Treasures of Hallowfall
+
+    -- Define all known treasures and their related criteria names
+    local waypoints = {
+        { x = 41.79, y = 58.27, title = "Caesper Lynx" },
+        { x = 69.25, y = 43.97, title = "Torran Dellain (Buy Meaty Haunch)" },
+        { x = 55.14, y = 51.85, title = "Smuggler's Treasure (Collect key from dead NPC below)" },
+        { x = 59.71, y = 60.58, title = "Dark Ritual (In the cave)" },
+        { x = 40.03, y = 51.12, title = "Arathi Loremaster (NPC)" },
+        { x = 68.68, y = 41.59, title = "Palawltar's Codex of Dimensional Structure" },
+        { x = 69.34, y = 43.94, title = "Care and Feeding of the Imperial Lynx" },
+        { x = 64.18, y = 28.12, title = "Shadow Curfew Guidelines" },
+        { x = 56.58, y = 65.18, title = "Beledar - The Emperor's Vision" },
+        { x = 70.22, y = 56.84, title = "The Song of Renilash" },
+        { x = 48.15, y = 39.59, title = "The Big Book of Arathi Idioms" },
+        { x = 55.36, y = 27.20, title = "Kobyss Shadeshaper (Sunless Lure)" },
+        { x = 47.61, y = 18.54, title = "Murkfin Depthstalker (Murkfin Lure)" },
+        { x = 50.65, y = 50.37, title = "Hungering Shimmerfin" },
+        { x = 34.96, y = 54.65, title = "Ragefin Necromancer (Ragefin Necrostaff)" },
+        { x = 55.72, y = 69.60, title = "Jewel of the Cliffs" },
+        { x = 30.23, y = 38.75, title = "Windswept Satchel" },
+        { x = 50.07, y = 13.85, title = "Lost Memento" },
+        { title = "Sky-Captain's Sunken Cache" },
+        { x = 57.65, y = 27.44, title = "Illuminated Footlocker" },
+        { x = 76.16, y = 53.99, title = "Spore-Covered Coffer" },
+    }
+
+    -- Track missing criteria
+    local missing = {}
+
+    local numCriteria = GetAchievementNumCriteria(achievementID)
+    if numCriteria then
+        for i = 1, numCriteria do
+            local critName, _, critCompleted = GetAchievementCriteriaInfo(achievementID, i)
+            if critName and not critCompleted then
+                -- Match the criterion to a waypoint by fuzzy name match
+                for _, wp in ipairs(waypoints) do
+                    if string.find(string.lower(wp.title), string.lower(critName), 1, true) then
+                        table.insert(missing, wp)
+                        break
+                    end
+                end
+            end
+        end
+    end
+
+    -- If no missing treasures found
+    if #missing == 0 then
+        print("|cff00ff00[Muus Meta Helper]|r All 'Treasures of Hallowfall' found or already completed!")
+        return
+    end
+
+    -- Add waypoints only for missing treasures
+    for _, wp in ipairs(missing) do
+        if wp.x and wp.y then
+            TomTom:AddWaypoint(mapID, wp.x / 100, wp.y / 100, { title = wp.title })
+        end
+    end
+
+    print("|cff00ff00[Muus Meta Helper]|r Added " .. #missing .. " missing 'Treasures of Hallowfall' waypoints to TomTom!")
+end)
 
 -- =========================
 -- Add Biblo Archivist Waypoints Button

@@ -1,0 +1,15 @@
+package-as: MuusMetaHelper
+
+enable-nolib-creation: no
+
+ignore:
+  - README.md
+  - .gitignore
+  - .github/
+  - LICENSE
+  - docs/
+  - .git
+
+manual-changelog:
+  filename: CHANGELOG.txt
+  markup-type: markdown
