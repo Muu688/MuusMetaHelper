@@ -2,6 +2,6 @@
 ## Title: Muu's Meta Helper (Worldsoul Searching)
 ## Notes: Keeps track of various tips/progress towards the Meta Acheivement 'Worldsoul Searching'
 ## Author: Muu
-## Version: 1.0.3
+## Version: 1.0.4
 
 MuusMetaHelper.lua
