@@ -1,7 +1,7 @@
 local ADDON_NAME = ...
 
 -- Tab definitions
-local TAB_NAMES = { "Overview", "Slate of the Union", "Rage Aside the Machine", "Crystal Chronicled", "Azj the World Turns", "Glory of the Delver" }
+local TAB_NAMES = { "Overview", "Slate of the Union", "Rage Aside the Machine", "Crystal Chronicled", "Azj the World Turns", "Glory of the Delver", "Going Goblin Mode", "Unravaled and Persevering", "Owner of a Radiant Heart" }
 local contentFrames = {}
 
 -- Create the main window
@@ -39,16 +39,26 @@ end
 
 -- Create tab buttons
 frame.tabs = {}
+local tabsPerRow = 4
+local tabWidth, tabHeight = 175, 24
+local tabSpacingX, tabSpacingY = 50, 8
+local startX, startY = 20, -40
+
 for i, tabName in ipairs(TAB_NAMES) do
     local tab = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-    tab:SetSize(130, 24)
-    if i == 1 then
-        tab:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -40)
-    else
-        tab:SetPoint("LEFT", frame.tabs[i-1], "RIGHT", 10, 0)
-    end
+    tab:SetSize(tabWidth, tabHeight)
+
+    local row = math.floor((i - 1) / tabsPerRow)
+    local col = (i - 1) % tabsPerRow
+
+    -- Position tabs based on row/column
+    local offsetX = startX + (col * (tabWidth + tabSpacingX))
+    local offsetY = startY - (row * (tabHeight + tabSpacingY))
+    tab:SetPoint("TOPLEFT", frame, "TOPLEFT", offsetX, offsetY)
+
     tab:SetText(tabName)
     tab:SetScript("OnClick", function() ShowTab(i) end)
+
     frame.tabs[i] = tab
 end
 
@@ -60,7 +70,7 @@ for i, tabName in ipairs(TAB_NAMES) do
 
     local text = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     text:SetPoint("CENTER")
-    if i == 3 or i == 5 then
+    if i == 3 or i == 7 or i == 8 or i == 9 then
         text:SetText(tabName .. " is in Development")
     end
 
@@ -89,7 +99,7 @@ paragraph:SetPoint("TOPLEFT")
 paragraph:SetWidth(450)
 paragraph:SetJustifyH("LEFT")
 paragraph:SetJustifyV("TOP")
-paragraph:SetText("Welcome to the Overview tab!\n\nI\'m a new addon developer so things may be shonky/broken but I'm trying my best\n\nI would consider having a weekly chore-list so that you're not grinding things out late. If you don't have rep with the required base factions consider doing at least,\n- Theatre troop\n- Awakening the Machine\n- Azj-Kahet 4 WQ for pact quest weekly\n- Siren Isle 'Epic Quest' or whatever it is as that's on weekly rotation so you want to be eating those up.\n\n\nThe 'Check World Quests' button will check the world quests needed relating to the acheivments 'Worm Theory' and 'Children's Entertainer' as those are on rotation and may not always be up, it's a good idea to press it regularly and check on what you need. Reach out to me on Discord 'muu0688' for feedback/bug reports.")
+paragraph:SetText("Welcome to the Overview tab!\n\nI\'m a new addon developer so things may be shonky/broken but I'm trying my best\n\n|cffff0000Where to start|r: I would start with the Siren Isle (Specifically working towards Siren-ity now) and Khaz Algar Diplomat. Both of those quests are significantly time-gated either requiring specific weekly quests to spawn or, requiring you to get max renown with each faction of which only a certain amount of rep can be obtained each week. While doing those two keep an eye out for any Delve stories you may need for the acheivement |cffffd100[Delve Loremaster]|r\n\nI would consider having a weekly chore-list so that you're not grinding things out late. If you don't have rep with the required base factions consider doing at least,\n- Theatre troop\n- Awakening the Machine\n- Azj-Kahet 4 WQ for pact quest weekly\n- Siren Isle 'Epic Quest' or whatever it is as that's on weekly rotation so you want to be eating those up.\n\n\nThe 'Check World Quests' button will check the world quests needed relating to the acheivments 'Worm Theory' and 'Children's Entertainer' as those are on rotation and may not always be up, it's a good idea to press it regularly and check on what you need. Reach out to me on Discord 'muu0688' for feedback/bug reports.")
 
 -- Make sure frame resizes based on text height
 textFrame:SetHeight(paragraph:GetStringHeight())
@@ -97,7 +107,7 @@ textFrame:SetHeight(paragraph:GetStringHeight())
 -- Create a "Check World Quests" button
 local checkButton = CreateFrame("Button", nil, overviewFrame, "UIPanelButtonTemplate")
 checkButton:SetSize(160, 30)
-checkButton:SetPoint("TOP", 0, -40)
+checkButton:SetPoint("TOP", 500, -450)
 checkButton:SetText("Check World Quests")
 
 local questIDs = {79958, 79959, 82324, 82288}
@@ -387,6 +397,7 @@ addTreasureWaypointsBtn:SetScript("OnClick", function()
 
     print("|cff00ff00[Muus Meta Helper]|r Added " .. added .. " treasure waypoints to TomTom!")
 end)
+
 -------------------------------------------------
 -- Crystal Chronicled Tab Custom Content
 -------------------------------------------------
@@ -672,6 +683,220 @@ for i, data in ipairs(buttonsData) do
     btn:SetScript("OnClick", data.func)
 end
 
+
+-------------------------------------------------
+-- Azj the world Turns Tab Custom Content
+-------------------------------------------------
+local azjTheWorldTurns = contentFrames[5]  -- make sure index matches your tab
+
+-- Scroll frame container
+local azjScrollFrame = CreateFrame("ScrollFrame", nil, azjTheWorldTurns, "UIPanelScrollFrameTemplate")
+azjScrollFrame:SetPoint("TOPLEFT", 20, -80)
+azjScrollFrame:SetSize(400, 500)
+
+-- Child frame for the text
+local azjTextFrame = CreateFrame("Frame", nil, azjScrollFrame)
+azjTextFrame:SetSize(320, 1) -- width must match scroll frame
+azjScrollFrame:SetScrollChild(azjTextFrame)
+
+-- FontString for paragraph text
+local azjParagraph = azjTextFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
+azjParagraph:SetPoint("TOPLEFT")
+azjParagraph:SetWidth(300)
+azjParagraph:SetJustifyH("LEFT")
+azjParagraph:SetJustifyV("TOP")
+azjParagraph:SetText("|cff00ff00Adventurer of Azj-Kahet|r: Consider downloading the addon 'rarescanner' to help here. Rares are best farmed WM On. Most of these might be acquired while trying to get Loremaster of Khaz'algar or Khaz Algar Diplomat as they can be farmed for Rep.\n\n|cff00ff00You Can't Hang With Us|r: Attack a Sentry at /way 60.79 25.85 until an Eradicator spawns, let his debuff go off on your until you're expelled from the city.\n\n|cff00ff00Worm Theory|r: There are three world quests in the Rak-ush area of Azj-Kahet (Bottom Right). They are not always up. Consider using the Worm Theory button to check if any of the world quests are up, or check the map yourself! :)\n\n|cff00ff00Smelling History|r: You must buy a |cffffd100[Potion of Polymorphic Translaton: Nerubian]|r from Siesbarg at /way 45.10 13. It gives you a 10m buff in which you can read these. This acheivement should be done alongside |cffffd100[Bookworm]|r. Click the button on the right to import all the waypoints of the things to read/interact with.\n\n|cff00ff00Treasures of Azj-Kahet|r: Click the button on the right to import all the waypoints to collect all the treasures. For Corrupted Memory and Memory Cache you will need Unseeming Shift stacks (Click the unseeming waypoint and stand in one of the pools to get these stacks)\n\n|cff00ff00The Unseeming|r: Click the button on the right and find a pool of black blood. Stand in it til the stacks hit 100. You may need some health pots or a healer if you're not geared.\n\n|cff00ff00Itsy Bitsy Spider|r: You will need to wave at several weave rats, the button on the right will import the co-ords into Tom Tom. You must have an active pact and a bundle of rumours/rumour map active to see Ru'murh nad Thimble. To see spindle you must have completed the quest |cffffd100[!Saving Private Spindle]|r.\n\n|cff00ff00Bookworm|r: Refer to [Smelling History guide a few lines up to get this acheivement. They should be done together. If you've already done Smelling History, the button to the right will still only import the waypoints you need.\n\n")
+
+local buttonWidth = 300
+local buttonHeight = 30
+local spacing = 10
+local anchorX, anchorY = 500, -100
+
+local buttonsData = {
+    { text = "The Unseeming waypoint", func = function()
+        if not TomTom then
+            print("|cffff0000[Muus Meta Helper]|r TomTom not found! Please enable the TomTom addon.")
+            return
+        end
+
+        local theUnseemingWaypoints = {
+            { map = 2256, x = 63.40, y = 82.87, title = "The Unseeming" },
+        }
+
+        local added = 0
+        for _, wp in ipairs(theUnseemingWaypoints) do
+            if wp.x and wp.y then
+                TomTom:AddWaypoint(wp.map, wp.x / 100, wp.y / 100, { title = wp.title })
+                added = added + 1
+            else
+                print("|cffffff00[Muus Meta Helper]|r Skipped waypoint: " .. (wp.title or "Unknown") .. " (missing coordinates)")
+            end
+        end
+
+        print("|cff00ff00[Muus Meta Helper]|r Added " .. added .. " 'The Unseeming' waypoints to TomTom!")
+    end },
+    { text = "Smelling History & Bookworm waypoints", func = function()
+        if not TomTom then
+            print("|cffff0000[Muus Meta Helper]|r TomTom not found! Please enable the TomTom addon.")
+            return
+        end
+
+        local achievementIDs = {40542, 40629}
+
+        local theUnseemingWaypoints = {
+            { map = 2256, x = 40.10, y = 39.80, title = "Entomological Essay on Grubs, Volume 1" },
+            { map = 2256, x = 39.79, y = 40.50, title = "Entomological Essay on Grubs, Volume 1" },
+            { map = 2256, x = 39.10, y = 42.59, title = "Entomological Essay on Grubs, Volume 1" },
+            { map = 2256, x = 27.71, y = 54.60, title = "Strands of Memory" },
+            { map = 2256, x = 38.54, y = 37.74, title = "Treatise on Forms: Skitterlings" },
+            { map = 2256, x = 38.22, y = 39.02, title = "Treatise on Forms: Sages" },
+            { map = 2256, x = 77.98, y = 41.03, title = "Treatise on Forms: Ascended" },
+            { map = 2256, x = 23.64, y = 51.07, title = "Treatise on Forms: Lords" },
+            { map = 2256, x = 62.96, y = 31.17, title = "Ethos of War, Part 1" },
+            { map = 2256, x = 66.69, y = 31.28, title = "Ethos of War, Part 2" },
+            { map = 2256, x = 48.85, y = 24.00, title = "Ethos of War, Part 3" },
+            { map = 2256, x = 43.25, y = 25.55, title = "Ethos of War, Part 4" },
+            { map = 2256, x = 37.10, y = 32.75, title = "Queen Anub'izek" },
+            { map = 2256, x = 38.26, y = 35.55, title = "Queen Xekatha" },
+            { map = 2256, x = 38.42, y = 32.27, title = "Queen Zaltra" },
+        }
+        local missing = {}
+
+        for _, achievementID in ipairs(achievementIDs) do
+            local numCriteria = GetAchievementNumCriteria(achievementID)
+            if numCriteria then
+                for i = 1, numCriteria do
+                    local critName, _, critCompleted = GetAchievementCriteriaInfo(achievementID, i)
+                    if critName and not critCompleted then
+                        for _, wp in ipairs(waypoints) do
+                            if string.find(string.lower(wp.title), string.lower(critName), 1, true) then
+                                -- avoid duplicates
+                                local alreadyAdded = false
+                                for _, m in ipairs(missing) do
+                                    if m.title == wp.title then
+                                        alreadyAdded = true
+                                        break
+                                    end
+                                end
+                                if not alreadyAdded then
+                                    table.insert(missing, wp)
+                                end
+                                break
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        
+        if #missing > 0 then
+            for _, wp in ipairs(missing) do
+                TomTom:AddWaypoint(mapID, wp.x / 100, wp.y / 100, { title = wp.title })
+            end
+            print("|cff00ff00[Muus Meta Helper]|r Added " .. #missing .. " missing 'Smelling History & Bookworm' waypoints from all tracked achievements!")
+        else
+            print("|cff00ff00[Muus Meta Helper]|r All 'Smelling History & Bookworm' waypoints already completed!")
+        end 
+    end },
+    
+    { text = "Treasures of Azj-Kahet Waypoints", func = function()
+        if not TomTom then
+            print("|cffff0000[Muus Meta Helper]|r TomTom not found! Please enable the TomTom addon.")
+            return
+        end
+
+        local achievementID = 40828
+        local waypoints = {
+            { map = 2255, x = 62.73, y = 87.90, title = "Corrupted Memory" },
+            { map = 2255, x = 74.80, y = 42.83, title = "Weaving Supplies" },
+            { map = 2255, x = 49.56, y = 43.70, title = "Nest Egg" },
+            { map = 2255, x = 64.33, y = 29.52, title = "Silk-Spun Supplies" },
+            { map = 2255, x = 54.45, y = 50.80, title = "Niffen Stash" },
+            { map = 2255, x = 62.73, y = 87.90, title = "Memory Cache" },
+            { map = 2213, x = 67.39, y = 74.41, title = "Trapped Trove" },
+            { map = 2255, x = 67.44, y = 90.72, title = "Disturbed soil" },
+            { map = 2255, x = 42.37, y = 72.28, title = "Nerubian Offerings" },
+            { map = 2255, x = 38.78, y = 37.22, title = "Missing Scout's Pack" },
+        }
+
+        local missing = {}
+        local numCriteria = GetAchievementNumCriteria(achievementID)
+        if numCriteria then
+            for i = 1, numCriteria do
+                local critName, _, critCompleted = GetAchievementCriteriaInfo(achievementID, i)
+                if critName and not critCompleted then
+                    for _, wp in ipairs(waypoints) do
+                        if string.find(string.lower(wp.title), string.lower(critName), 1, true) then
+                            table.insert(missing, wp)
+                            break
+                        end
+                    end
+                end
+            end
+        end
+        
+        if #missing > 0 then
+            for _, wp in ipairs(missing) do
+                TomTom:AddWaypoint(wp.map, wp.x / 100, wp.y / 100, { title = wp.title })
+            end
+            print("|cff00ff00[Muus Meta Helper]|r Added " .. #missing .. " missing 'Treasures of Azj-Kahet' waypoints to TomTom!")
+        else
+            print("|cff00ff00[Muus Meta Helper]|r All 'Treasures of Azj-Kahet' waypoints already completed!")
+        end
+    end },
+
+    { text = "Itsy Bitsy Spider Waypoints", func = function()
+        if not TomTom then
+            print("|cffff0000[Muus Meta Helper]|r TomTom not found! Please enable the TomTom addon.")
+            return
+        end
+
+        local achievementID = 40624
+        local waypoints = {
+            { map = 2255, x = 56.38, y = 42.29, title = "Bobbin" },
+            { map = 2255, x = 57.06, y = 41.74, title = "Webster" },
+            { map = 2255, x = 55.65, y = 43.93, title = "Spindle" },
+            { map = 2255, x = 69.89, y = 82.75, title = "Thimble" },
+            { map = 2255, x = 79.60, y = 56.80, title = "Ru'murh" },
+            { map = 2255, x = 49.20, y = 15.70, title = "Scampering Weaver-rat" },
+        }
+
+        local missing = {}
+        local numCriteria = GetAchievementNumCriteria(achievementID)
+        if numCriteria then
+            for i = 1, numCriteria do
+                local critName, _, critCompleted = GetAchievementCriteriaInfo(achievementID, i)
+                if critName and not critCompleted then
+                    for _, wp in ipairs(waypoints) do
+                        if string.find(string.lower(wp.title), string.lower(critName), 1, true) then
+                            table.insert(missing, wp)
+                            break
+                        end
+                    end
+                end
+            end
+        end
+        
+        if #missing > 0 then
+            for _, wp in ipairs(missing) do
+                TomTom:AddWaypoint(wp.map, wp.x / 100, wp.y / 100, { title = wp.title })
+            end
+            print("|cff00ff00[Muus Meta Helper]|r Added " .. #missing .. " missing 'Itsy Bitsy Spider' waypoints to TomTom!")
+        else
+            print("|cff00ff00[Muus Meta Helper]|r All 'Itsy Bitsy Spider' waypoints already completed!")
+        end
+    end },
+
+}
+
+-- Dynamically create buttons
+for i, data in ipairs(buttonsData) do
+    local btn = CreateFrame("Button", nil, azjTheWorldTurns, "UIPanelButtonTemplate")
+    btn:SetSize(buttonWidth, buttonHeight)
+    btn:SetPoint("TOPLEFT", anchorX, anchorY - ((i - 1) * (buttonHeight + spacing)))
+    btn:SetText(data.text)
+    btn:SetScript("OnClick", data.func)
+end
 -------------------------------------------------
 -- Delve Loremaster Tab Custom Content
 -------------------------------------------------
@@ -679,16 +904,16 @@ local delveLoremasterFrame = contentFrames[6]
 
 local delveTitleContent = CreateFrame("Frame", nil, delveLoremasterFrame)
 delveTitleContent:SetSize(360, 220)
-delveTitleContent:SetPoint("TOPLEFT", 0, 70)
-local delveLoremasterHeader = delveTitleContent:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
-delveLoremasterHeader:SetPoint("CENTER")
+delveTitleContent:SetPoint("TOPLEFT", 0, -10)
+local delveLoremasterHeader = delveLoremasterFrame:CreateFontString(nil, "OVERLAY", "GameFontNormalLarge")
+delveLoremasterHeader:SetPoint("TOPLEFT", 20, -60)
 delveLoremasterHeader:SetText("Delve Loremaster Remaining Stories")
 
 -- =========================
 -- Scrollable Frame: Progress Output
 -- =========================
 local progressScroll = CreateFrame("ScrollFrame", nil, delveLoremasterFrame, "UIPanelScrollFrameTemplate")
-progressScroll:SetPoint("TOPLEFT", 20, -50)
+progressScroll:SetPoint("TOPLEFT", 20, -100)
 progressScroll:SetSize(700, 200)
 
 local progressFrame = CreateFrame("Frame", nil, progressScroll)
@@ -706,13 +931,12 @@ progressText:SetText("")  -- initially empty
 -- Scrollable Frame: Tips / Notes
 -- =========================
 local tipsScroll = CreateFrame("ScrollFrame", nil, delveLoremasterFrame, "UIPanelScrollFrameTemplate")
-tipsScroll:SetPoint("TOPLEFT", 20, -270) -- below the progress frame
+tipsScroll:SetPoint("TOPLEFT", 20, -330)
 tipsScroll:SetSize(700, 300)
 
 local tipsFrame = CreateFrame("Frame", nil, tipsScroll)
 tipsFrame:SetSize(580, 1)
 tipsScroll:SetScrollChild(tipsFrame)
-
 
 local delveTipText = "|cff00ff00Sporesweeper|r: Complete a Fungarian Delve Tier 8 or higher without getting hit by Sporebit (Spore bomb circle things) - going close causes them to grow and after 5s they explore. Best way to tackle this is to just take your time through the delve.\n\n|cff00ff00Spider Senses|r: Complete a Nerubian Delve (Earthcrawl Mines, The Dread Pit, The Spiral Weave, The Underkeep) without spawning ambushers from Nerubian Webs, or taking damage from Nerubian Eggs on Tier 8 or Higher. Don't step on any nerubian webs or standing near them. Pretty much take your time and avoid things.\n\n|cff00ff00Daystormer|r: Complete an Order of the Night Delve (Nightfall Sanctum) on Tier 8 without being targeted by Artillery fire (Don't stand in purple circles)\n\n|cff00ff00Brann Development|r: For the most part ignore this, it will probably complete as you complete the other parts of Glory of the Delver, but Brann needs to be level 25.\n\n|cff00ff00My Stab Happy Nemesis|r: Defeat Nexus Princess Ky'vesa in her Delve (/way Tazavesh 38.91 51.82)\n\n|cff00ff00Leave No Treasure Unfound|r: Click the buttons to get links to where to find the chests. They are not always available and may require a specific story varient(s) to obtain all treasure chests for a single delve. (Thanks Wowhead user Wiciregord for creating these maps)"
 local tipsText = tipsFrame:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
@@ -820,7 +1044,7 @@ local DELVE_URLS = {
     ["The Sinkhole"] = "https://imgur.com/685MraM",
     ["Nightfall Sanctum"] = "https://imgur.com/hmQHWYz",
     ["Tak-Rethan Abyss"] = "https://imgur.com/l90VdUn",
-    ["Spiral Weave"] = "https://imgur.com/a/ZPZp0FE",
+    ["The Spiral Weave"] = "https://imgur.com/a/ZPZp0FE",
     ["The Underkeep"] = "https://www.youtube.com/watch?v=sjQxlqxfrls",
     ["Sidestreet Sluice"] = "https://www.youtube.com/watch?v=k2MCkCll880",
     ["Archival Assault"] = "https://www.youtube.com/watch?v=YCbHyzWQ570",
@@ -836,7 +1060,7 @@ local buttonSpacingY = 10
 
 -- Starting point anchored to bottom-left of the tab
 local startX = 20
-local startY = -500
+local startY = -550
 
 for i = 1, 15 do
     local delve = DELVES[i]
