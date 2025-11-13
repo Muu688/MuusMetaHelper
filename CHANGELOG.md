@@ -11,3 +11,7 @@
 
 # v1.0.6
 - Add Rage Aside the Machine guide/tab/functions
+
+# v1.0.7 Muus Meta Helper
+- Improve World Quest Tracker for Worm Theory and Children's Entertainer to be clearer
+- Add Flames Radiance Owner of a Radiant Heart Guide
