@@ -5,3 +5,10 @@
 ## Version: 1.0.7
 
 MuusMetaHelper.lua
+Achievements/Overview.lua
+Achievements/SlateOfTheUnion.lua
+Achievements/RageAsideTheMachine.lua
+Achievements/CrystalChronicled.lua
+Achievements/AzjTheWorldTurns.lua
+Achievements/DelveLoremaster.lua
+Achievements/OwnerOfARadientHeart.lua
