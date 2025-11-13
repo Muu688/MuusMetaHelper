@@ -6,3 +6,8 @@
 
 # v1.0.4
 - Add various Crystal Chronicled improvements and functions to dynamically add waypoints for reminaing effort.
+# v1.0.5
+- Add Azj the world turns data
+
+# v1.0.6
+- Add Rage Aside the Machine guide/tab/functions
