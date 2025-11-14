@@ -18,3 +18,6 @@
 
 # v1.0.8
 - Added Going Goblin Mode achievement guide/waypoint data helpers.
+
+# v1.0.9
+- Added UnraveledAndPersevering guide/waypoint helpers.

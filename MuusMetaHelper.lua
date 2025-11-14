@@ -70,7 +70,7 @@ for i, tabName in ipairs(TAB_NAMES) do
 
     local text = content:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     text:SetPoint("CENTER")
-    if i == 8 then
+    if i > 9 then
         text:SetText(tabName .. " is in Development")
     end
 
