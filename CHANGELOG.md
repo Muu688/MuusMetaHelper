@@ -12,6 +12,9 @@
 # v1.0.6
 - Add Rage Aside the Machine guide/tab/functions
 
-# v1.0.7 Muus Meta Helper
+# v1.0.7
 - Improve World Quest Tracker for Worm Theory and Children's Entertainer to be clearer
 - Add Flames Radiance Owner of a Radiant Heart Guide
+
+# v1.0.8
+- Added Going Goblin Mode achievement guide/waypoint data helpers.

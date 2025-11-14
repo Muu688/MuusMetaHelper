@@ -2,7 +2,7 @@
 ## Title: Muu's Meta Helper (Worldsoul Searching)
 ## Notes: Keeps track of various tips/progress towards the Meta Acheivement 'Worldsoul Searching'
 ## Author: Muu
-## Version: 1.0.7
+## Version: 1.0.8
 
 MuusMetaHelper.lua
 Achievements/Overview.lua
@@ -12,3 +12,4 @@ Achievements/CrystalChronicled.lua
 Achievements/AzjTheWorldTurns.lua
 Achievements/DelveLoremaster.lua
 Achievements/OwnerOfARadientHeart.lua
+Achievements/GoingGoblinMode.lua
